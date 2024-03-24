@@ -1,11 +1,11 @@
 % File for testing images using trained models (based on the 1x3 feature)
-addpath '1x3 Feature\Algorithms'
-addpath '1x3 Feature\Sample Data'
+addpath 'Algorithms'
+addpath 'Sample Data'
 
 % Set parameters here   
 pattern = 'gbrg';   % The Bayer array configuration the reinterpolation algorithms should use
 img_src = '';
-model_src = "Sample Data\sample_diverse_model.mat";
+model_src = "Sample Data\sample_shallow_model.mat";
 
 
 % Find the 1x3 percent difference feature for each of the algorithms
@@ -24,13 +24,13 @@ end
 
 % Find the feature with the minimum total percent difference
 best_algo = find(sum == min(sum));
-feature = [cell2mat(percent_diff{best_algo}(1:3))]
+feature = [cell2mat(percent_diff{best_algo}(1:3))];
 
 % Test this feature against our model, and output a decision
+fprintf("Testing Image (%s) on 1x3 Feature\n", img_src);
 model = load(model_src).best_model;
 if predict(model, feature) == 1
-    result = "Image is real."
+    fprintf("  Image is real (feature = [%f, %f, %f])\n", feature(1), feature(2), feature(3))
 else
-    result = "Image is fake."
+    fprintf("  Image is fake (feature = [%f, %f, %f])\n", feature(1), feature(2), feature(3))
 end
-
